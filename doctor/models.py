@@ -27,9 +27,9 @@ class Notification(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True, blank=True)
     appointment = models.ForeignKey("base.Appointment", on_delete=models.CASCADE, null=True, blank=True,
                                     related_name="doctor_appointment_notification")
-    category = models.CharField(max_length=20, choices=Status.choices)
+    status = models.CharField(max_length=20, choices=Status.choices)
     seen = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Doctor {self.doctor.full_name} - Notification({self.category})"
+        return f"Doctor {self.doctor.full_name} - Notification({self.status})"
