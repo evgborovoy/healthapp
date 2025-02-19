@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 from userauth.models import User
 
 
@@ -13,7 +13,7 @@ class Doctor(models.Model):
     specialization = models.CharField(max_length=100, null=True, blank=True)  # TODO: maybe use choices
     qualification = models.CharField(max_length=50, null=True, blank=True)  # TODO: maybe use choices
     year_of_exp = models.CharField(max_length=90, null=True, blank=True)
-    next_appointment_date = models.CharField(max_length=90, null=True, blank=True)
+    next_appointment_date = models.DateTimeField(default=timezone.now, null=True, blank=True)
 
     def __str__(self):
         return f"Doctor {self.full_name}"
