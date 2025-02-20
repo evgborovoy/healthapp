@@ -4,9 +4,9 @@ from userauth.models import User
 
 class Patient(models.Model):
     class GenderChoices(models.TextChoices):
-        MALE = "MALE", "Male"
-        FEMALE = "FEMALE", "Female"
-        OTHER = "OTHER", "Other"
+        MALE = "Male", "Male"
+        FEMALE = "Female", "Female"
+        OTHER = "Other", "Other"
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.FileField(upload_to="images", null=True, blank=True)
