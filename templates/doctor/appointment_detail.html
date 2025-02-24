@@ -38,23 +38,23 @@
                   <a
                     href="{% url 'doctor:cancel_appointment' appointment.appointment_id %}"
                     class="btn btn-outline-danger btn-sm"
-                    >Отменить прием <i class="fas fa-trash ms-2"></i
-                  ></a>
+                    >Отменить прием <i class="fas fa-trash ms-2"></i>
+                  </a>
                   <a
                     href="{% url 'doctor:complete_appointment' appointment.appointment_id %}"
                     class="btn btn-outline-success btn-sm"
-                    >Завершить прием <i class="fas fa-check-circle ms-2"></i
-                  ></a>
+                    >Завершить прием <i class="fas fa-check-circle ms-2"></i>
+                  </a>
                   {% elif appointment.status == "CANCELLED" %}
                   <a
                     href="{% url 'doctor:activate_appointment' appointment.appointment_id %}"
                     class="btn btn-success btn-sm"
-                    >Активировать прием <i class="fas fa-check-circle ms-2"></i
-                  ></a>
+                    >Возобновить прием <i class="fas fa-check-circle ms-2"></i>
+                  </a>
                   {% elif appointment.status == "CANCELLED" %}
                   <a href="#" class="btn btn-success btn-sm"
-                    >Прием выполнен <i class="fas fa-check-circle ms-2"></i
-                  ></a>
+                    >Прием выполнен <i class="fas fa-check-circle ms-2"></i>
+                  </a>
                   {% endif %}
                 </p>
               </a>
