@@ -74,3 +74,30 @@ def activate_appointment(request: HttpRequest, appointment_id):
     appointment.save()
     messages.success(request, "Прием возобновлен")
     return redirect("doctor:appointment_detail", appointment.appointment_id)
+
+
+@login_required
+def add_medical_record(request: HttpRequest, appointment_id):
+    doctor = Doctor.objects.get(user=request.user)
+    appointment = base_models.Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    if request.method == "POST":
+        diagnosis = request.POST.get("diagnosis")
+        treatment = request.POST.get("treatment")
+        base_models.MedicalRecord.objects.create(appointment=appointment, diagnosis=diagnosis, treatment=treatment)
+        messages.success(request, "Медицинская запись добавлена")
+        return redirect("doctor:appointment_detail", appointment.appointment_id)
+
+@login_required
+def update_medical_record(request: HttpRequest, appointment_id, medical_record_id):
+    doctor = Doctor.objects.get(user=request.user)
+    appointment = base_models.Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    medical_record = base_models.MedicalRecord.objects.get(id=medical_record_id, appointment=appointment)
+    if request.method == "POST":
+        diagnosis = request.POST.get("diagnosis")
+        treatment = request.POST.get("treatment")
+        medical_record.diagnosis = diagnosis
+        medical_record.treatment = treatment
+        medical_record.save()
+        messages.success(request, "Медицинская запись обновлена")
+        return redirect("doctor:appointment_detail", appointment.appointment_id)
+
