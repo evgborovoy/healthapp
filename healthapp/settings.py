@@ -240,3 +240,7 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 AUTH_USER_MODEL = "userauth.User"
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",  # Оставляем стандартный бэкенд
+]

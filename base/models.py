@@ -36,7 +36,9 @@ class Appointment(models.Model):
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.CONSIDERED)
 
     def __str__(self):
-        return f"{self.patient.full_name} - {self.doctor.full_name}"
+        patient_name = self.patient.full_name if self.patient else "Unknown patient"
+        doctor_name = self.doctor.full_name if self.doctor else "Unknown doctor"
+        return f"{patient_name} - {doctor_name}"
 
 
 class MedicalRecord(models.Model):

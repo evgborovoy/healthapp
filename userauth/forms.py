@@ -1,9 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from userauth.models import User
 
 
-class UserLoginForm(forms.ModelForm):
+class UserLoginForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "agent@mail.com"}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "********"}))
     class Meta:

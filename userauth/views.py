@@ -16,67 +16,41 @@ def logout_view(request: HttpRequest):
     return redirect("/")
 
 
-# def login_view(request: HttpRequest):
-#     if request.user.is_authenticated:
-#         messages.success(request, "You are already logged in")
-#         return redirect("/")
-#
-#     if request.method == "POST":
-#         print("Post method")
-#         form = UserLoginForm(request.POST or None)
-#         if form.is_valid():
-#             print("form is valid")
-#             email = form.cleaned_data["email"]
-#             password = form.cleaned_data["password"]
-#
-#             try:
-#                 user_ins = User.objects.get(email=email, is_active=True)
-#                 user_auth = authenticate(request, email=email, password=password)
-#                 print(f"Trying to authenticate: email={email}, password={password}")
-#                 print(f"Result of authenticate(): {user_auth}")
-#                 if user_ins is not None:
-#                     print(f"User authenticated: {user_auth.email}")  # Отладка
-#                     login(request, user_auth)
-#                     messages.success(request, "You successfully logged in")
-#                     return redirect(request.GET.get("next", "/"))
-#                 else:
-#                     messages.error(request, "Invalid email or password")
-#             except:
-#                 messages.error(request, "Invalid email or password")
-#         return redirect(request.GET.get("next", "/"))
-#     else:
-#         print("else block")
-#         form = UserLoginForm()
-#
-#     return render(request, "userauth/sign_in.html", {"form": form})
-
 def login_view(request):
     if request.user.is_authenticated:
         messages.success(request, "Вы уже вошли в аккаунт")
         return redirect("/")
+
     if request.method == "POST":
-        form = UserLoginForm(request.POST or None)
+        form = UserLoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
+
             try:
                 user_instance = User.objects.get(email=email, is_active=True)
-                user_authenticate = authenticate(
-                    request, email=email, password=password
-                )
+            except User.DoesNotExist:
+                messages.error(request, "Пользователь с таким email не найден")
+                return redirect("userauth:sign_in")
 
-                if user_instance is not None:
-                    login(request, user_authenticate)
-                    messages.success(request, "Вы успешно залогинились")
-                    return redirect("/")
-                else:
-                    messages.error(request, "Ошибка в логине или в пароле")
-            except:
-                messages.error(request, "Пользователя с такими данными не существует")
+            user_authenticate = authenticate(request, email=email, password=password)
+
+            if user_authenticate is not None:
+                login(request, user_authenticate)
+                messages.success(request, "Вы успешно вошли в систему")
+                return redirect("/")
+            else:
+                messages.error(request, "Неверный email или пароль")
+                return redirect("userauth:sign_in")
+
+        else:
+            print("Ошибки формы:", form.errors)  # Вывод ошибок в консоль
+            messages.error(request, f"Ошибка в форме: {form.errors}")  # Вывод ошибок в интерфейсе
+
     else:
         form = UserLoginForm()
-    context = {"form": form}
-    return render(request, "userauth/sign_in.html", context)
+
+    return render(request, "userauth/sign_in.html", {"form": form})
 
 
 def register_view(request: HttpRequest):
