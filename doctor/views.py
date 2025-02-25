@@ -159,7 +159,7 @@ def update_prescription(request: HttpRequest, appointment_id, prescription_id):
 
 
 @login_required
-def notifications(request:HttpRequest):
+def notifications(request: HttpRequest):
     doctor = Doctor.objects.get(user=request.user)
     notifications_list = Notification.objects.filter(doctor=doctor, seen=False)
     seen_notifications = Notification.objects.filter(doctor=doctor, seen=True)
@@ -178,3 +178,49 @@ def mark_as_seen_notification(request, notification_id):
     notification.save()
     messages.success(request, "Уведомление прочитано")
     return redirect("doctor:notifications")
+
+
+@login_required
+def profile(request):
+    doctor = Doctor.objects.get(user=request.user)
+    # Проверка, есть ли значение в next_appointment_date
+    if doctor.next_appointment_date:
+        formatted_next_appointment_date = doctor.next_appointment_date.strftime("%d.%m.%Y")
+    else:
+        formatted_next_appointment_date = "Не назначено"  # Можно поставить дефолтное значение
+
+    if request.method == "POST":
+        full_name = request.POST.get("full_name")
+        image = request.FILES.get("image")
+        phone = request.POST.get("phone")
+        city = request.POST.get("city")
+        bio = request.POST.get("bio")
+        specialization = request.POST.get("specialization")
+        qualification = request.POST.get("qualification")
+        year_of_exp = request.POST.get("year_of_exp")
+        next_appointment_date = request.POST.get("next_appointment_date")
+
+        if next_appointment_date:
+            doctor.next_appointment_date = next_appointment_date
+        else:
+            doctor.next_appointment_date = None
+        doctor.full_name = full_name
+        doctor.phone = phone
+        doctor.city = city
+        doctor.bio = bio
+        doctor.specialization = specialization
+        doctor.qualification = qualification
+        doctor.year_of_exp = year_of_exp
+
+        if image is not None:
+            doctor.image = image
+
+        doctor.save()
+        messages.success(request, "Данные обновлены")
+        return redirect("doctor:profile")
+
+    context = {
+        "doctor": doctor,
+        "formatted_next_appointment_date": formatted_next_appointment_date
+    }
+    return render(request, "doctor/profile.html", context=context)

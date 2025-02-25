@@ -1,7 +1,7 @@
 from django.urls import path
 from doctor.views import dashboard_view, appointments_view, appointment_detail_view, cancel_appointment, \
     complete_appointment, activate_appointment, add_medical_record, update_medical_record, add_lab_test, \
-    update_lab_test, add_prescription, update_prescription, notifications, mark_as_seen_notification
+    update_lab_test, add_prescription, update_prescription, notifications, mark_as_seen_notification, profile
 
 app_name = "doctor"
 
@@ -24,5 +24,7 @@ urlpatterns = [
     path("update-prescription/<int:appointment_id>/<int:prescription_id>/", update_prescription, name="update_prescription"),
 
     path("notifications/", notifications, name="notifications"),
-    path("notifications/<int:notification_id>", mark_as_seen_notification, name="mark_as_seen_notification"),
+    path("notifications/<int:notification_id>/", mark_as_seen_notification, name="mark_as_seen_notification"),
+
+    path("profile/", profile, name="profile"),
 ]
