@@ -36,7 +36,7 @@
                     class="btn btn-success btn-sm"
                     >Возобновить прием <i class="fas fa-check-circle ms-2"></i>
                   </a>
-                  {% elif appointment.status == "CANCELLED" %}
+                  {% elif appointment.status == "COMPLETED" %}
                   <a href="#" class="btn btn-success btn-sm"
                     >Прием выполнен <i class="fas fa-check-circle ms-2"></i>
                   </a>
@@ -127,11 +127,11 @@
           <div class="collapse" id="collapseLabTest">
             <div class="border p-3 mb-4 rounded-4">
               <form
-                action="{% url 'doctor:appointment_detail' appointment.appointment_id %}" method="POST"> <!--  change url -->
+                action="{% url 'doctor:add_lab_test' appointment.appointment_id %}" method="POST">
                 {% csrf_token %}
                 <input type="text" class="form-control mb-3" name="test_name" placeholder="Название анализа"/>
                 <input type="text" class="form-control mb-3" name="description" placeholder="Описание"/>
-                <textarea name="result" class="form-control mb-3" placeholder="Результат" id=""></textarea>
+                <textarea name="test_result" class="form-control mb-3" placeholder="Результат" id=""></textarea>
                 <button type="submit" class="btn btn-secondary btn-sm">
                   Сохранить <i class="fas fa-save ms-2"></i>
                 </button>
@@ -158,13 +158,11 @@
                 <div class="collapse mt-3" id="collapseLabTest{{ l.id }}">
                   <div class="border p-3 rounded-4">
                     <form
-                      action="{% url 'doctor:edit_lab_test' appointment.appointment_id l.id %}"
-                      method="POST"
-                    >
+                      action="{% url 'doctor:update_lab_test' appointment.appointment_id l.id %}" method="POST">
                       {% csrf_token %}
                       <input type="text" class="form-control mb-3" value="{{ l.test_name }}" name="test_name" placeholder="Название анализа"/>
                       <input type="text" class="form-control mb-3" value="{{ l.description }}" name="description" placeholder="Описание"/>
-                      <textarea name="result" class="form-control mb-3" placeholder="Результат" id="">{{ l.test_result }}</textarea>
+                      <textarea name="test_result" class="form-control mb-3" placeholder="Результат" id="">{{ l.test_result }}</textarea>
                       <button class="btn btn-secondary btn-sm" type="submit">
                         Сохранить изменения <i class="fas fa-save ms-2"></i>
                       </button>

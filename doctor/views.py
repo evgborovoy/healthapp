@@ -87,6 +87,7 @@ def add_medical_record(request: HttpRequest, appointment_id):
         messages.success(request, "Медицинская запись добавлена")
         return redirect("doctor:appointment_detail", appointment.appointment_id)
 
+
 @login_required
 def update_medical_record(request: HttpRequest, appointment_id, medical_record_id):
     doctor = Doctor.objects.get(user=request.user)
@@ -101,3 +102,33 @@ def update_medical_record(request: HttpRequest, appointment_id, medical_record_i
         messages.success(request, "Медицинская запись обновлена")
         return redirect("doctor:appointment_detail", appointment.appointment_id)
 
+
+@login_required
+def add_lab_test(request: HttpRequest, appointment_id):
+    doctor = Doctor.objects.get(user=request.user)
+    appointment = base_models.Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    if request.method == "POST":
+        description = request.POST.get("description")
+        test_name = request.POST.get("test_name")
+        test_result = request.POST.get("test_result")
+        base_models.LabTest.objects.create(description=description, test_name=test_name, test_result=test_result,
+                                           appointment=appointment)
+        messages.success(request, "Лабораторный тест добавлен")
+        return redirect("doctor:appointment_detail", appointment.appointment_id)
+
+
+@login_required
+def update_lab_test(request: HttpRequest, appointment_id, lab_test_id):
+    doctor = Doctor.objects.get(user=request.user)
+    appointment = base_models.Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    lab_test = base_models.LabTest.objects.get(id=lab_test_id, appointment=appointment)
+    if request.method == "POST":
+        description = request.POST.get("description")
+        test_name = request.POST.get("test_name")
+        test_result = request.POST.get("test_result")
+        lab_test.description = description
+        lab_test.test_name = test_name
+        lab_test.test_result = test_result
+        lab_test.save()
+        messages.success(request, "Лабораторный тест обновлен")
+        return redirect("doctor:appointment_detail", appointment.appointment_id)
