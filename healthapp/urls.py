@@ -8,6 +8,7 @@ urlpatterns = [
     path("userauth/", include("userauth.urls")),
     path("", include("base.urls")),
     path("doctor/", include("doctor.urls")),
+    path("patient/", include("patient.urls")),
 ]
 
 if settings.DEBUG:

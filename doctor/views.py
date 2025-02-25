@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 
 from base import models as base_models
-from base.models import Appointment
 from doctor.models import Doctor, Notification
 
 
@@ -50,7 +49,7 @@ def appointment_detail_view(request, appointment_id):
 def cancel_appointment(request: HttpRequest, appointment_id):
     doctor = Doctor.objects.get(user=request.user)
     appointment = base_models.Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
-    appointment.status = Appointment.Status.CANCELLED
+    appointment.status = base_models.Appointment.Status.CANCELLED
     appointment.save()
     messages.success(request, "Прием отменен")
     return redirect("doctor:appointment_detail", appointment.appointment_id)
@@ -60,7 +59,7 @@ def cancel_appointment(request: HttpRequest, appointment_id):
 def complete_appointment(request: HttpRequest, appointment_id):
     doctor = Doctor.objects.get(user=request.user)
     appointment = base_models.Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
-    appointment.status = Appointment.Status.COMPLETED
+    appointment.status = base_models.Appointment.Status.COMPLETED
     appointment.save()
     messages.success(request, "Прием завершен")
     return redirect("doctor:appointment_detail", appointment.appointment_id)
@@ -70,7 +69,7 @@ def complete_appointment(request: HttpRequest, appointment_id):
 def activate_appointment(request: HttpRequest, appointment_id):
     doctor = Doctor.objects.get(user=request.user)
     appointment = base_models.Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
-    appointment.status = Appointment.Status.PLANNED
+    appointment.status = base_models.Appointment.Status.PLANNED
     appointment.save()
     messages.success(request, "Прием возобновлен")
     return redirect("doctor:appointment_detail", appointment.appointment_id)
