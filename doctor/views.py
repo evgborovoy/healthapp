@@ -132,3 +132,27 @@ def update_lab_test(request: HttpRequest, appointment_id, lab_test_id):
         lab_test.save()
         messages.success(request, "Лабораторный тест обновлен")
         return redirect("doctor:appointment_detail", appointment.appointment_id)
+
+
+@login_required
+def add_prescription(request: HttpRequest, appointment_id):
+    doctor = Doctor.objects.get(user=request.user)
+    appointment = base_models.Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    if request.method == "POST":
+        medication = request.POST.get("medication")
+        base_models.Prescription.objects.create(medication=medication, appointment=appointment)
+        messages.success(request, "Лечение назначено")
+        return redirect("doctor:appointment_detail", appointment.appointment_id)
+
+
+@login_required
+def update_prescription(request: HttpRequest, appointment_id, prescription_id):
+    doctor = Doctor.objects.get(user=request.user)
+    appointment = base_models.Appointment.objects.get(appointment_id=appointment_id, doctor=doctor)
+    prescription = base_models.Prescription.objects.get(id=prescription_id, appointment=appointment)
+    if request.method == "POST":
+        medication = request.POST.get("medication")
+        prescription.medication = medication
+        prescription.save()
+        messages.success(request, "Лечение обновлено")
+        return redirect("doctor:appointment_detail", appointment.appointment_id)

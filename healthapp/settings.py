@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 from django.contrib.messages import constants as messages
@@ -116,9 +116,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static/'
-STATIC_FILES_DIRS = [BASE_DIR / 'staticfiles']
+# Указывает, где искать статические файлы во время разработки
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),  # Папка static в корне проекта
+]
+# Указывает, где Django будет хранить собранные статические файлы
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# URL, по которому доступны статические файлы
+STATIC_URL = "/static/"
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
