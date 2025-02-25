@@ -84,8 +84,8 @@ def add_medical_record(request: HttpRequest, appointment_id):
         diagnosis = request.POST.get("diagnosis")
         treatment = request.POST.get("treatment")
         base_models.MedicalRecord.objects.create(appointment=appointment, diagnosis=diagnosis, treatment=treatment)
-        messages.success(request, "Медицинская запись добавлена")
-        return redirect("doctor:appointment_detail", appointment.appointment_id)
+    messages.success(request, "Медицинская запись добавлена")
+    return redirect("doctor:appointment_detail", appointment.appointment_id)
 
 
 @login_required
@@ -99,8 +99,8 @@ def update_medical_record(request: HttpRequest, appointment_id, medical_record_i
         medical_record.diagnosis = diagnosis
         medical_record.treatment = treatment
         medical_record.save()
-        messages.success(request, "Медицинская запись обновлена")
-        return redirect("doctor:appointment_detail", appointment.appointment_id)
+    messages.success(request, "Медицинская запись обновлена")
+    return redirect("doctor:appointment_detail", appointment.appointment_id)
 
 
 @login_required
@@ -113,8 +113,8 @@ def add_lab_test(request: HttpRequest, appointment_id):
         test_result = request.POST.get("test_result")
         base_models.LabTest.objects.create(description=description, test_name=test_name, test_result=test_result,
                                            appointment=appointment)
-        messages.success(request, "Лабораторный тест добавлен")
-        return redirect("doctor:appointment_detail", appointment.appointment_id)
+    messages.success(request, "Лабораторный тест добавлен")
+    return redirect("doctor:appointment_detail", appointment.appointment_id)
 
 
 @login_required
@@ -130,8 +130,8 @@ def update_lab_test(request: HttpRequest, appointment_id, lab_test_id):
         lab_test.test_name = test_name
         lab_test.test_result = test_result
         lab_test.save()
-        messages.success(request, "Лабораторный тест обновлен")
-        return redirect("doctor:appointment_detail", appointment.appointment_id)
+    messages.success(request, "Лабораторный тест обновлен")
+    return redirect("doctor:appointment_detail", appointment.appointment_id)
 
 
 @login_required
@@ -141,8 +141,8 @@ def add_prescription(request: HttpRequest, appointment_id):
     if request.method == "POST":
         medication = request.POST.get("medication")
         base_models.Prescription.objects.create(medication=medication, appointment=appointment)
-        messages.success(request, "Лечение назначено")
-        return redirect("doctor:appointment_detail", appointment.appointment_id)
+    messages.success(request, "Лечение назначено")
+    return redirect("doctor:appointment_detail", appointment.appointment_id)
 
 
 @login_required
@@ -154,5 +154,27 @@ def update_prescription(request: HttpRequest, appointment_id, prescription_id):
         medication = request.POST.get("medication")
         prescription.medication = medication
         prescription.save()
-        messages.success(request, "Лечение обновлено")
-        return redirect("doctor:appointment_detail", appointment.appointment_id)
+    messages.success(request, "Лечение обновлено")
+    return redirect("doctor:appointment_detail", appointment.appointment_id)
+
+
+@login_required
+def notifications(request:HttpRequest):
+    doctor = Doctor.objects.get(user=request.user)
+    notifications_list = Notification.objects.filter(doctor=doctor, seen=False)
+    seen_notifications = Notification.objects.filter(doctor=doctor, seen=True)
+    context = {
+        "not_seen_notifications": notifications_list,
+        "seen_notifications": seen_notifications,
+    }
+    return render(request, "doctor/notifications.html", context=context)
+
+
+@login_required
+def mark_as_seen_notification(request, notification_id):
+    doctor = Doctor.objects.get(user=request.user)
+    notification = Notification.objects.get(id=notification_id, doctor=doctor)
+    notification.seen = True
+    notification.save()
+    messages.success(request, "Уведомление прочитано")
+    return redirect("doctor:notifications")
